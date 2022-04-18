@@ -12,7 +12,7 @@ which is responsible for parsing arguments and starting the Cucumber executions.
 See the *cucumber* task definition within [build.gradle](build.gradle) for the list of configurable arguments.
 All arguments are passed to each Cucumber execution, except for:
 
-* `-dirx` type arguments (e.g. `--dir0 feature1`) - these form the final argument passed to Cucumber and determine the number of executions
+* `--dirx` type arguments (e.g. `--dir0 feature1`) - these form the final argument passed to Cucumber and determine the number of executions
 
 The provided setup runs two Cucumber executions:
 
