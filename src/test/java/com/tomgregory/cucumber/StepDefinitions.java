@@ -21,6 +21,11 @@ public class StepDefinitions {
         account.credit(amount);
     }
 
+    @When("the account is debited with {double}")
+    public void whenAccountIsDebited(Double amount) {
+        account.debit(amount);
+    }
+
     @Then("account should have a balance of {double}")
     public void thenAccountShouldHaveBalance(Double expectedBalance) {
         assertEquals(expectedBalance, account.getBalance());

@@ -12,6 +12,10 @@ public class Account {
         balance += amount;
     }
 
+    public void debit(Double amount) {
+        balance -= amount;
+    }
+
     public Double getBalance() {
         return balance;
     }

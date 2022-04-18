@@ -4,26 +4,41 @@ import io.cucumber.core.cli.Main;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class CucumberLauncher {
     private static final String DIRECTORY_ARGUMENT = "--dir";
 
-    public static void main(String[] args) {
-        parseExecutionArguments(List.of(args)).forEach(theseArgs -> Main.run(theseArgs.toArray(new String[]{})));
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        List<List<String>> allExecutionArguments = parseAllExecutionArguments(List.of(args));
+        System.out.printf("Executing %s instances of Cucumber%n", allExecutionArguments.size());
+
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        List<Future<Byte>> futures = allExecutionArguments.stream().map(theseArgs -> executorService.submit(() -> {
+            System.out.println("Starting CucumberLauncher execution");
+            return Main.run(theseArgs.toArray(new String[]{}));
+        })).toList();
+
+        List<Byte> exitStatuses = waitForCompletion(futures);
+        exitStatuses.stream().filter(exitStatus -> exitStatus != 0).findFirst().ifPresent(System::exit);
+        System.exit(0);
     }
 
-    private static List<List<String>> parseExecutionArguments(List<String> args) {
+    private static List<List<String>> parseAllExecutionArguments(List<String> args) {
         int executionCount = countExecutions(args);
 
         List<List<String>> allExecutionArguments = new ArrayList<>();
         for (int i = 0; i < executionCount; i++) {
-            allExecutionArguments.add(getExecutionArguments(args, i));
+            allExecutionArguments.add(getSingleRunExecutionArguments(args, i));
         }
 
         return allExecutionArguments;
     }
 
-    private static List<String> getExecutionArguments(List<String> args, int executionIndex) {
+    private static List<String> getSingleRunExecutionArguments(List<String> args, int executionIndex) {
         List<String> argsCopy = new ArrayList<>(args);
         List<String> executionArguments = new ArrayList<>();
 
@@ -34,7 +49,7 @@ public class CucumberLauncher {
 
             if (arg.startsWith(DIRECTORY_ARGUMENT)) {
                 String dir = argsCopy.remove(0).trim();
-                if (arg.equals(String.format("%s%s", DIRECTORY_ARGUMENT, executionIndex))) {
+                if (arg.equals(directoryArgumentKey(executionIndex))) {
                     directoryArgument = dir;
                 }
             } else {
@@ -42,8 +57,15 @@ public class CucumberLauncher {
             }
         }
 
+        if (directoryArgument.isEmpty()) {
+            throw new IllegalStateException(String.format("Directory argument %s was not found", directoryArgumentKey(executionIndex)));
+        }
         executionArguments.add(directoryArgument);
         return executionArguments;
+    }
+
+    private static String directoryArgumentKey(int executionIndex) {
+        return String.format("%s%s", DIRECTORY_ARGUMENT, executionIndex);
     }
 
     private static int countExecutions(List<String> args) {
@@ -59,5 +81,13 @@ public class CucumberLauncher {
             }
         }
         return dirCount;
+    }
+
+    private static List<Byte> waitForCompletion(List<Future<Byte>> futures) throws InterruptedException, ExecutionException {
+        List<Byte> exitStatuses = new ArrayList<>();
+        for (Future<Byte> future : futures) {
+            exitStatuses.add(future.get());
+        }
+        return exitStatuses;
     }
 }

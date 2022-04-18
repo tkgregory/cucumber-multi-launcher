@@ -33,17 +33,15 @@ task cucumberCli() {
     }
 }
 
-task cucumberLauncher() {
+task cucumberLauncher(type: JavaExec) {
     dependsOn assemble, testClasses
-    doLast {
-        javaexec {
-            main = "com.tomgregory.cucumber.CucumberLauncher"
-            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
-            args = [
-                    '--plugin', 'pretty',
-                    '--plugin', 'html:target/cucumber-report.html',
-                    '--glue', 'com.tomgregory.cucumber',
-                    '--dir1' , 'src/test/resources/features1']
-        }
-    }
+    mainClass = "com.tomgregory.cucumber.CucumberLauncher"
+    classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+    args = [
+            '--plugin', 'pretty',
+            '--plugin', 'html:target/cucumber-report.html',
+            '--glue', 'com.tomgregory.cucumber',
+            '--dir0', 'src/test/resources/features1',
+            '--dir1', 'src/test/resources/features2'
+    ]
 }
