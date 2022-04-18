@@ -1,0 +1,49 @@
+plugins {
+    id 'java'
+}
+
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'io.cucumber:cucumber-java:7.2.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter:5.8.1'
+}
+
+task cucumberCli() {
+    dependsOn assemble, testClasses
+    doLast {
+        javaexec {
+            main = "io.cucumber.core.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = [
+                    '--plugin', 'pretty',
+                    '--plugin', 'html:target/cucumber-report.html',
+                    '--glue', 'com.tomgregory.cucumber',
+                    'src/test/resources/features1']
+        }
+    }
+}
+
+task cucumberLauncher() {
+    dependsOn assemble, testClasses
+    doLast {
+        javaexec {
+            main = "com.tomgregory.cucumber.CucumberLauncher"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = [
+                    '--plugin', 'pretty',
+                    '--plugin', 'html:target/cucumber-report.html',
+                    '--glue', 'com.tomgregory.cucumber',
+                    '--dir1' , 'src/test/resources/features1']
+        }
+    }
+}
