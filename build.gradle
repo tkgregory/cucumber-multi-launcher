@@ -14,26 +14,11 @@ repositories {
 
 dependencies {
     testImplementation 'io.cucumber:cucumber-java:7.2.3'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter:5.8.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter:5.8.2'
 }
 
-task cucumberCli() {
-    dependsOn assemble, testClasses
-    doLast {
-        javaexec {
-            main = "io.cucumber.core.cli.Main"
-            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
-            args = [
-                    '--plugin', 'pretty',
-                    '--plugin', 'html:build/cucumber-report.html',
-                    '--glue', 'com.tomgregory.cucumber',
-                    'src/test/resources/features1']
-        }
-    }
-}
-
-task cucumberLauncher(type: JavaExec) {
+task cucumber(type: JavaExec) {
     dependsOn assemble, testClasses
     mainClass = "com.tomgregory.cucumber.CucumberLauncher"
     classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
