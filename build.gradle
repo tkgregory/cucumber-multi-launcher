@@ -26,7 +26,7 @@ task cucumberCli() {
             classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
             args = [
                     '--plugin', 'pretty',
-                    '--plugin', 'html:target/cucumber-report.html',
+                    '--plugin', 'html:build/cucumber-report.html',
                     '--glue', 'com.tomgregory.cucumber',
                     'src/test/resources/features1']
         }
@@ -39,7 +39,7 @@ task cucumberLauncher(type: JavaExec) {
     classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
     args = [
             '--plugin', 'pretty',
-            '--plugin', 'html:target/cucumber-report.html',
+            '--plugin', 'html:build/cucumber-report.html',
             '--glue', 'com.tomgregory.cucumber',
             '--dir0', 'src/test/resources/features1',
             '--dir1', 'src/test/resources/features2'
