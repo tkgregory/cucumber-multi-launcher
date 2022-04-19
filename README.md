@@ -2,7 +2,7 @@ An example launcher to run multiple Cucumber executions in the same JVM.
 
 View [this YouTube video](https://youtu.be/oohJSnhwnBk) for a run through of how it works.
 
-**Note that this is for demonstration purposes only. Please modify to meet your requirements and thoroughy test before using.** 
+**Note that this example is experimental. Please modify to meet your requirements and thoroughy test before using.** 
 
 ## Running
 
