@@ -1,3 +1,5 @@
+[![CI](https://github.com/tkgregory/cucumber-multi-launcher/actions/workflows/gradle.yml/badge.svg)](https://github.com/tkgregory/cucumber-multi-launcher/actions/workflows/gradle.yml)
+
 An example launcher to run multiple Cucumber executions in the same JVM.
 
 View [this YouTube video](https://youtu.be/oohJSnhwnBk) for a run through of how it works.
