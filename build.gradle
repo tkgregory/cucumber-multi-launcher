@@ -29,4 +29,13 @@ task cucumber(type: JavaExec) {
             '--dir0', 'src/test/resources/features1',
             '--dir1', 'src/test/resources/features2'
     ]
+    javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
